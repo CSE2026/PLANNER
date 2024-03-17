@@ -6,28 +6,13 @@ module.exports = {
   ],
   theme: {
     extend: {
-      animation: {
-        shimmer: "shimmer 2s linear infinite",
-        makevis: "makevis 3s linear forwards",
-      },
-      keyframes: {
-        shimmer: {
-          from: {
-            backgroundPosition: "0 0",
-          },
-          to: {
-            backgroundPosition: "-200% 0",
-          },
-        },
-        makevis:{
-          from: {
-           opacity:'0',
-          },
-          to: {
-            opacity:'1',
-          },
-        },
-      },
+      colors:{
+        planarViolet:'#925FF0',
+        planarOrange:'#DDA15E',
+        planarGreen:'#A3FDA1',
+        planarWhite:'#F1FAEE',
+        planarDark:'#101720'
+      }
     },
   },
   plugins: [],
