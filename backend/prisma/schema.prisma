@@ -12,3 +12,19 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+model User {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ activities activity[] 
+}
+
+model activity{
+  id Int @id @default(autoincrement())
+  title String
+  when DateTime
+  userId Int 
+  user  User @relation(fields: [userId], references: [id])
+}
