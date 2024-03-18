@@ -8,12 +8,15 @@ const saltOrRounds = 10;
 export class UserController {
 constructor(private readonly userservice:UserService){}
 
-@Post()
+@Post('auth')
 async createUser(@Body() userDTo:UserDto)
 {
     const {email,password}=userDTo;
     const hash = await bcrypt.hash(password, saltOrRounds);
-    return this.userservice.createUser(email,hash);
+    const res:any=this.userservice.createUser(email,hash);
+    console.log(res)
+    return res
+
 }
 
 }
