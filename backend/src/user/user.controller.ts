@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
@@ -10,8 +10,8 @@ export class UserController {
   constructor(private readonly userservice: UserService) {}
 
   @Post('signup')
-  async createUser(@Body() userDTo: UserDto) {
-    const { email, password } = userDTo;
+  async createUser(@Body() userDto: UserDto) {
+    const { email, password } = userDto;
     const hash = await bcrypt.hash(password, saltOrRounds);
     const res: any = this.userservice.createUser(email, hash);
     return res;

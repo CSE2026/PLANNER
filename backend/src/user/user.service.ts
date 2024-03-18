@@ -1,9 +1,6 @@
-import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -13,22 +10,40 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(email: string, password: string) {
-    const users = await this.prisma.user.findMany({
-      where: {
-        email,
-      },
-    });
-    if (!users || users.length === 0) {
-      const usern = this.prisma.user.create({
+    // const users = await this.prisma.user.findMany({
+    //   where: {
+    //     email,
+    //   },
+    // });
+    // if (!users || users.length === 0) {
+    //   const usern = this.prisma.user.create({
+    //     data: {
+    //       email,
+    //       password,
+    //     },
+    //   });
+    //   delete (await usern).password;
+    //   return usern;
+    // }
+    // throw new HttpException('user exists', HttpStatus.CONFLICT);
+    try {
+      const user = await this.prisma.user.create({
         data: {
           email,
           password,
         },
       });
-      delete (await usern).password;
-      return usern;
+      delete user.password;
+      delete user.createdAt;
+      delete user.updatedAt;
+      return user;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002')
+          throw new HttpException('User Exist', HttpStatus.EXPECTATION_FAILED);
+      }
+      throw new HttpException('Bad Network', HttpStatus.BAD_GATEWAY);
     }
-    throw new HttpException('user exists', HttpStatus.CONFLICT);
   }
 
   async signinUser(email: string, password: string) {
