@@ -6,7 +6,9 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
+
 export class UserService {
+  
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(email: string, password: string) {
@@ -27,10 +29,12 @@ export class UserService {
     // }
     // throw new HttpException('user exists', HttpStatus.CONFLICT);
     try {
+      const saltOrRounds = 10;
+      const hash = await bcrypt.hash(password, saltOrRounds);
       const user = await this.prisma.user.create({
         data: {
           email,
-          password,
+         password:hash,
         },
       });
       delete user.password;
@@ -42,7 +46,7 @@ export class UserService {
         if (error.code === 'P2002')
           throw new HttpException('User Exist', HttpStatus.EXPECTATION_FAILED);
       }
-      throw new HttpException('Bad Network', HttpStatus.BAD_GATEWAY);
+      throw new HttpException("error", HttpStatus.BAD_GATEWAY);
     }
   }
 

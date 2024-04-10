@@ -3,7 +3,7 @@ import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 
-const saltOrRounds = 10;
+
 
 @Controller('user')
 export class UserController {
@@ -12,8 +12,8 @@ export class UserController {
   @Post('signup')
   async createUser(@Body() userDto: UserDto) {
     const { email, password } = userDto;
-    const hash = await bcrypt.hash(password, saltOrRounds);
-    const res: any = this.userservice.createUser(email, hash);
+ 
+    const res: any = this.userservice.createUser(email, password);
     return res;
   }
 
